@@ -11,25 +11,6 @@ services:
     depends_on:
       - database
 
-  client:
-    build: client
-    restart: unless-stopped
-    volumes:
-      - ./client:/app
-      - /app/node_modules
-    ports:
-      - 4321:4321
-    depends_on:
-      - server
-  
-  k6-tests:
-    entrypoint: "/bin/true"
-    build: k6-tests
-    volumes:
-      - ./k6-tests/tests:/tests
-    depends_on:
-      - client
-
   database-migrations:
     image: flyway/flyway:10
     env_file:
@@ -41,7 +22,7 @@ services:
     command: -connectRetries=60 -baselineOnMigrate=true migrate
 
   database:
-    container_name: postgresql_database
+    container_name: project_database
     image: postgres:17.0
     restart: unless-stopped
     env_file:
