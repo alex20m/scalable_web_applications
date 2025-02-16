@@ -27,7 +27,7 @@ app.get("/api/languages",
 
 app.get("/api/languages/:id/exercises",
     cache({
-        cacheName: "exercise-cache",
+        cacheName: (c) => `exercise-cache-${c.req.param("id")}`,
         wait: true,
       }),
 );
