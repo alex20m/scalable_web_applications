@@ -13,6 +13,15 @@ const sql = postgres({
     database: Deno.env.get("PGDATABASE"),
     port: Deno.env.get("PGPORT"),
 });
+let redis;
+if (Deno.env.get("REDIS_HOST")) {
+  redis = new Redis(
+    Number.parseInt(Deno.env.get("REDIS_PORT")),
+    Deno.env.get("REDIS_HOST"),
+  );
+} else {
+  redis = new Redis(6379, "redis");
+}
 
 app.use("/*", cors());
 app.use("/*", logger());
@@ -40,6 +49,19 @@ app.get("/api/languages", async (c) => {
 app.get("/api/languages/:id/exercises", async (c) => {
     const exercises = await sql`SELECT id, title, description FROM exercises WHERE language_id = ${c.req.param("id")}`;
     return c.json(exercises);
+});
+
+app.post("/api/exercises/:id/submissions", async (c) => {
+    const { id } = c.req.param();
+    const { source_code } = await c.req.json();
+    const result = await sql`
+        INSERT INTO exercise_submissions (exercise_id, source_code) 
+        VALUES (${id}, ${source_code}) 
+        RETURNING id
+    `;
+    const submissionId = result[0].id;
+    await redis.lpush("submissions", submissionId);
+    return c.json({ id: submissionId });
 });
 
 export default app;

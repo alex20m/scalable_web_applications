@@ -10,6 +10,7 @@ services:
       - project.env
     depends_on:
       - database
+      - redis
 
   database-migrations:
     image: flyway/flyway:10
@@ -34,7 +35,18 @@ services:
 
   redis:
     image: redis:7.4.2
-    command: redis-server /usr/local/etc/redis/redis.conf
+
+  grader:
+    build: grader
+    restart: unless-stopped
     volumes:
-      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./grader:/app
+    ports:
+      - 8001:8000
+    env_file:
+      - project.env
+    depends_on:
+      - redis
+      - database
+
 

@@ -1,13 +1,7 @@
 {
   "version": "4",
   "specifiers": {
-    "jsr:@hono/hono@4.6.5": "4.6.5",
     "npm:ioredis@5.4.2": "5.4.2"
-  },
-  "jsr": {
-    "@hono/hono@4.6.5": {
-      "integrity": "68efe4a0ab7c4fb082cb71aa894a25e1c6cfad6d124dc943471e6758a7a1bdee"
-    }
   },
   "npm": {
     "@ioredis/commands@1.2.0": {
@@ -344,7 +338,6 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@hono/hono@4.6.5",
       "npm:ioredis@5.4.2"
     ]
   }
