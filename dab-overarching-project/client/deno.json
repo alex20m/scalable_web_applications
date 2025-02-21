@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "dev": "deno run -A --node-modules-dir npm:astro dev",
+    "build": "deno run -A --node-modules-dir npm:astro build"
+  },
+  "imports": {
+    "astro/": "npm:astro/",
+    "@astrojs/svelte": "npm:@astrojs/svelte"
+  }
+} 
