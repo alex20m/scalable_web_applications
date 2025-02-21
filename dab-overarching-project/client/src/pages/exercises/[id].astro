@@ -1,10 +1,11 @@
 ---
-import Exercise from '../../components/Exercise.svelte';
+import Layout from '../../layouts/Layout.astro';
+import ExerciseForm from '../../components/ExerciseForm.svelte';
+
+const { id } = Astro.params;
 ---
 
-<html>
-  <body>
-    <p>Exercise 1</p>
-    <Exercise exerciseId={1} />
-  </body>
-</html>
+<Layout>
+  <p>Exercise {id}</p>
+  <ExerciseForm client:load />
+</Layout>
