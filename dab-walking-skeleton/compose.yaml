@@ -22,10 +22,13 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
-    ports:
-      - 4321:4321
     depends_on:
       - server
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.client-router.entrypoints=web"
+      - "traefik.http.routers.client-router.rule=PathPrefix(`/`)"
+      - "traefik.http.services.client-service.loadbalancer.server.port=4321"
   
   k6-tests:
     entrypoint: "/bin/true"

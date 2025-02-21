@@ -6,9 +6,6 @@ COPY package.json .
 
 RUN DENO_FUTURE=1 deno install --allow-scripts
 
-RUN deno install npm:svelte
-RUN deno install npm:@astrojs/svelte
-
 COPY . .
 
 CMD [ "task", "dev", "--host" ]

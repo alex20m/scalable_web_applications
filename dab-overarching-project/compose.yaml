@@ -4,8 +4,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./server:/app
-    ports:
-      - 8000:8000
     env_file:
       - project.env
     depends_on:
@@ -48,5 +46,16 @@ services:
     depends_on:
       - redis
       - database
+
+  client:
+    build: client
+    restart: unless-stopped
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    depends_on:
+      - server
+    ports:
+      - 4321:4321
 
 
