@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import ExerciseForm from '../../components/ExerciseForm.svelte';
+import ExerciseForm from '../../components/ExerciseEditor.svelte';
 
 export const prerender = false;
 
@@ -9,5 +9,5 @@ const { id } = Astro.params;
 
 <Layout>
   <p>Exercise {id}</p>
-  <ExerciseForm client:load />
+  <ExerciseForm client:load exerciseId={id} />
 </Layout>

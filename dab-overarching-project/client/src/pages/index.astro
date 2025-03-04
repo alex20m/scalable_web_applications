@@ -1,9 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import LanguagesList from '../components/AvailableLanguages.svelte';
 ---
 
 <Layout>
-	<p>Programming time!</p>
-	<a href="/exercises/1">Start</a>
+	<h1>Available languages</h1>
+	<LanguagesList client:load />
 </Layout>
 

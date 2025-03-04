@@ -1,9 +1,24 @@
-export const countState = $state({
-    count: 0,
-    comments: [],
-  });
-  
-  export const addComment = (newComment) => {
-    countState.count = countState.comments.length + 1;
-    countState.comments = [...countState.comments, newComment];
-  };
+let comments = $state([]);
+
+const useCommentState = () => {
+
+    if (!import.meta.env.SSR) {
+        const storedComments = localStorage.getItem("comments");
+        comments = storedComments ? JSON.parse(storedComments) : [];
+    }
+    
+    return {
+        get count() {
+            return comments.length;
+        },
+        get comments() {
+            return comments;
+        },
+        add: (comment) => {
+            comments.push(comment);
+            localStorage.setItem("comments", JSON.stringify(comments));
+        },
+    };
+};
+
+export { useCommentState };

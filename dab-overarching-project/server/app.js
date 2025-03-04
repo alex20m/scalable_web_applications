@@ -51,6 +51,36 @@ app.get("/api/languages/:id/exercises", async (c) => {
     return c.json(exercises);
 });
 
+app.get("/api/exercises/:id", async (c) => {
+  const { id } = c.req.param();
+  const exercise = await sql`
+      SELECT id, title, description
+      FROM exercises 
+      WHERE id = ${id}
+  `;
+
+  if (exercise.length === 0) {
+    return c.body(null, 404);
+  }
+
+  return c.json(exercise[0]);
+});
+
+app.get("/api/submissions/:id/status", async (c) => {
+  const { id } = c.req.param();
+  const submission = await sql`
+      SELECT grading_status, grade
+      FROM exercise_submissions
+      WHERE id = ${id}
+  `;
+
+  if (submission.length === 0) {
+    return c.body(null, 404);
+  }
+
+  return c.json(submission[0]);
+});
+
 app.post("/api/exercises/:id/submissions", async (c) => {
     const { id } = c.req.param();
     const { source_code } = await c.req.json();

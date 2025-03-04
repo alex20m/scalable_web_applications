@@ -9,6 +9,11 @@ services:
     depends_on:
       - database
       - redis
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.server-router.entrypoints=web"
+      - "traefik.http.routers.server-router.rule=PathPrefix(`/api`)"
+      - "traefik.http.services.server-service.loadbalancer.server.port=8000"
 
   database-migrations:
     image: flyway/flyway:10
@@ -39,13 +44,18 @@ services:
     restart: unless-stopped
     volumes:
       - ./grader:/app
-    ports:
-      - 8001:8000
     env_file:
       - project.env
     depends_on:
       - redis
       - database
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grader-api.rule=PathPrefix(`/grader-api`)"
+      - "traefik.http.routers.grader-api.middlewares=grader-api-replacepath"
+      - "traefik.http.middlewares.grader-api-replacepath.replacePathRegex.regex=^/grader-api(.*)"
+      - "traefik.http.middlewares.grader-api-replacepath.replacePathRegex.replacement=/api$1"
+      - "traefik.http.services.grader-api.loadbalancer.server.port=8000"
 
   client:
     build: client
@@ -55,6 +65,20 @@ services:
       - /app/node_modules
     depends_on:
       - server
-    ports:
-      - 4321:4321
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.client-router.entrypoints=web"
+      - "traefik.http.routers.client-router.rule=PathPrefix(`/`)"
+      - "traefik.http.services.client-service.loadbalancer.server.port=4321"
 
+  traefik:
+    image: traefik:v3.3
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:8000"
+    ports:
+      - "8080:8080"
+      - "8000:8000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"

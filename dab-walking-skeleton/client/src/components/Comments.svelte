@@ -1,27 +1,24 @@
 <script>
-    import { addComment, countState } from "../states/commentState.svelte.js";
+    import { useCommentState } from "../states/commentState.svelte.js";
+    const commentState = useCommentState();
   
-    let newComment = "";
-
-    function submitComment() {
-        if (newComment.trim() !== "") {
-            addComment(newComment);
-            newComment = "";
-        }   
-    }
+    let comment = $state("");
+    const addComment = () => {
+      commentState.add(comment);
+      comment = "";
+    };
+  </script>
   
-</script>
-
-<input
-    type="text"
-    bind:value={newComment}
-    placeholder="Add a comment"
-/>
-<button onclick={submitComment}>Add Comment</button>
-
-<ul>
-    {#each countState.comments as comment}
-        <li>{comment}</li>
+  <h2>Add comment</h2>
+  
+  <input type="text" bind:value={comment} /><br/>
+  <button onclick={addComment}>Add comment</button>
+  
+  <h2>Comments</h2>
+  
+  <ul>
+    {#each commentState.comments as comment}
+      <li>{comment}</li>
     {/each}
-</ul>
-
+  </ul>
+  
